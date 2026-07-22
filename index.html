@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoFeed — Carousel</title>
+        <style>
+            :root{--bg:#fafafa;--card:#fff;--muted:#8e8e8e;--accent:#262626}
+            *{box-sizing:border-box}
+            html,body{height:100%}
+            body{font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0;background:var(--bg);color:var(--accent)}
+            header{display:flex;align-items:center;gap:.75rem;padding:14px 18px;background:#fff;border-bottom:1px solid #eee}
+            header h1{margin:0;font-size:1.1rem}
+
+            .wrap{max-width:100%;margin:0;padding:0}
+            .carousel{position:relative;background:var(--card);border:1px solid #eaeaea;border-radius:0;overflow:visible;height:100vh}
+            .viewport{overflow:hidden;height:100%}
+            .slides{display:flex;transition:transform .45s cubic-bezier(.2,.8,.2,1);width:100%;height:100%}
+            .slide{min-width:100%;position:relative;height:100%}
+            .slide img{display:block;width:100%;height:100%;object-fit:cover}
+
+            .meta{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.02))}
+            .meta .user{display:flex;align-items:center;gap:10px}
+            .avatar{width:36px;height:36px;border-radius:50%;background:url('https://picsum.photos/seed/avatar/80') center/cover}
+            .actions{display:flex;gap:12px;align-items:center;color:var(--muted)}
+
+            .nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.85);box-shadow:0 6px 18px rgba(0,0,0,.08);cursor:pointer;font-size:22px}
+            .nav.prev{left:10px}
+            .nav.next{right:10px}
+
+            .dots{display:flex;gap:8px;justify-content:center;padding:10px}
+            .dot{width:9px;height:9px;border-radius:50%;background:#ddd;cursor:pointer}
+            .dot.active{background:#333}
+
+            .thumbs{display:flex;gap:8px;padding:12px;overflow:auto;background:#fff}
+            .thumb{width:72px;height:72px;flex:0 0 auto;border-radius:8px;object-fit:cover;cursor:pointer;opacity:.8;border:2px solid transparent}
+            .thumb.active{opacity:1;border-color:#111}
+
+            @media (max-width:900px){
+                /* mobile/tablet: make image fill viewport, hide thumbnails/meta for clarity */
+                .carousel{height:100vh;border-radius:0}
+                .meta{display:none}
+                .thumbs{display:none}
+                .nav{width:40px;height:40px;font-size:20px}
+            }
+
+            @media (max-width:420px){
+                .nav{width:36px;height:36px;font-size:18px}
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>PhotoFeed</h1>
+        </header>
+
+        <div class="wrap">
+            <div class="carousel" id="carousel">
+                <div class="viewport">
+                    <div class="slides" id="slides">
+                        <div class="slide" data-caption="Golden hour — waves">
+                            <img src="https://picsum.photos/id/1015/1200/1200" alt="slide 1" />
+                        </div>
+                        <div class="slide" data-caption="City skyline at dusk">
+                            <img src="https://picsum.photos/id/1016/1200/1200" alt="slide 2" />
+                        </div>
+                        <div class="slide" data-caption="Mountain trails">
+                            <img src="https://picsum.photos/id/1020/1200/1200" alt="slide 3" />
+                        </div>
+                        <div class="slide" data-caption="Forest path">
+                            <img src="https://picsum.photos/id/1024/1200/1200" alt="slide 4" />
+                        </div>
+                        <div class="slide" data-caption="Minimal still life">
+                            <img src="https://picsum.photos/id/1035/1200/1200" alt="slide 5" />
+                        </div>
+                    </div>
+                </div>
+
+                <button class="nav prev" aria-label="Previous">‹</button>
+                <button class="nav next" aria-label="Next">›</button>
+
+                <div class="dots" id="dots"></div>
+
+                <div class="meta">
+                    <div class="user"><div class="avatar"></div><strong>artme</strong></div>
+                    <div class="actions">❤ <span class="likes">1.2k</span></div>
+                </div>
+
+                <div class="thumbs" id="thumbs"></div>
+            </div>
+        </div>
+
+        <script>
+            (function(){
+                const slidesWrap = document.getElementById('slides');
+                const slides = Array.from(document.querySelectorAll('.slide'));
+                const prev = document.querySelector('.nav.prev');
+                const next = document.querySelector('.nav.next');
+                const dotsEl = document.getElementById('dots');
+                const thumbsEl = document.getElementById('thumbs');
+                let index = 0;
+                let autoplay = null;
+
+                function renderDots(){
+                    slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot';d.dataset.i=i;d.addEventListener('click',()=>show(i));dotsEl.appendChild(d)});
+                }
+
+                function renderThumbs(){
+                    slides.forEach((s,i)=>{const img=s.querySelector('img');const t=document.createElement('img');t.src=img.src; t.className='thumb'; t.dataset.i=i; t.addEventListener('click',()=>show(i)); thumbsEl.appendChild(t)});
+                }
+
+                function updateActive(){
+                    document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===index));
+                    document.querySelectorAll('.thumb').forEach((t,i)=>t.classList.toggle('active',i===index));
+                }
+
+                function show(i){ index = (i+slides.length)%slides.length; slidesWrap.style.transform = `translateX(${-index*100}%)`; updateActive(); }
+
+                prev.addEventListener('click',()=>show(index-1));
+                next.addEventListener('click',()=>show(index+1));
+
+                // keyboard
+                window.addEventListener('keydown',(e)=>{ if(e.key==='ArrowLeft') show(index-1); if(e.key==='ArrowRight') show(index+1); });
+
+                // autoplay (4 seconds)
+                function startAuto(){ if (autoplay) return; autoplay = setInterval(()=>show(index+1),4000); }
+                function stopAuto(){ if (!autoplay) return; clearInterval(autoplay); autoplay = null }
+                document.getElementById('carousel').addEventListener('mouseenter',stopAuto);
+                document.getElementById('carousel').addEventListener('mouseleave',startAuto);
+
+                // touch
+                let sx=0,dx=0
+                slidesWrap.addEventListener('touchstart',e=>{sx=e.touches[0].clientX})
+                slidesWrap.addEventListener('touchmove',e=>{dx=e.touches[0].clientX})
+                slidesWrap.addEventListener('touchend',()=>{ if(!dx) return; if(sx-dx>40) show(index+1); else if(dx-sx>40) show(index-1); sx=dx=0 })
+
+                // init
+                renderDots(); renderThumbs(); show(0); startAuto();
+            })();
+        </script>
+    </body>
+</html>
