@@ -1,142 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PhotoFeed — Carousel</title>
-        <style>
-            :root{--bg:#fafafa;--card:#fff;--muted:#8e8e8e;--accent:#262626}
-            *{box-sizing:border-box}
-            html,body{height:100%}
-            body{font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0;background:var(--bg);color:var(--accent)}
-            header{display:flex;align-items:center;gap:.75rem;padding:14px 18px;background:#fff;border-bottom:1px solid #eee}
-            header h1{margin:0;font-size:1.1rem}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Marouane Abdou — Contemporary Painter" />
+  <title>Marouane Abdou | Painter</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="navbar" id="top">
+    <a class="logo" href="#top">MAROUANE ABDOU</a>
+    <nav>
+      <a href="#work">Works</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
 
-            .wrap{max-width:100%;margin:0;padding:0}
-            .carousel{position:relative;background:var(--card);border:1px solid #eaeaea;border-radius:0;overflow:visible;height:100vh}
-            .viewport{overflow:hidden;height:100%}
-            .slides{display:flex;transition:transform .45s cubic-bezier(.2,.8,.2,1);width:100%;height:100%}
-            .slide{min-width:100%;position:relative;height:100%}
-            .slide img{display:block;width:100%;height:100%;object-fit:cover}
+  <main>
+    <section class="hero">
+      <div class="hero-text">
+        <p class="label">Contemporary painter · Morocco</p>
+        <h1>Painting what lingers.</h1>
+        <p class="intro">A visual practice shaped by memory, gesture, colour and texture.</p>
+        <a class="text-link" href="#work">View selected works ↓</a>
+      </div>
+      <div class="hero-image">
+        <!-- Change the image link below to your own artwork. -->
+        <img src="https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?auto=format&fit=crop&w=1400&q=85" alt="Featured abstract painting" />
+        <span>Untitled, 2025</span>
+      </div>
+    </section>
 
-            .meta{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.02))}
-            .meta .user{display:flex;align-items:center;gap:10px}
-            .avatar{width:36px;height:36px;border-radius:50%;background:url('https://picsum.photos/seed/avatar/80') center/cover}
-            .actions{display:flex;gap:12px;align-items:center;color:var(--muted)}
+    <section class="statement" id="about">
+      <p class="label">Artist statement</p>
+      <p class="large-copy">My paintings hold the space between what is seen and what is felt—where a place, a gesture, or a memory becomes material.</p>
+    </section>
 
-            .nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.85);box-shadow:0 6px 18px rgba(0,0,0,.08);cursor:pointer;font-size:22px}
-            .nav.prev{left:10px}
-            .nav.next{right:10px}
-
-            .dots{display:flex;gap:8px;justify-content:center;padding:10px}
-            .dot{width:9px;height:9px;border-radius:50%;background:#ddd;cursor:pointer}
-            .dot.active{background:#333}
-
-            .thumbs{display:flex;gap:8px;padding:12px;overflow:auto;background:#fff}
-            .thumb{width:72px;height:72px;flex:0 0 auto;border-radius:8px;object-fit:cover;cursor:pointer;opacity:.8;border:2px solid transparent}
-            .thumb.active{opacity:1;border-color:#111}
-
-            @media (max-width:900px){
-                /* mobile/tablet: make image fill viewport, hide thumbnails/meta for clarity */
-                .carousel{height:100vh;border-radius:0}
-                .meta{display:none}
-                .thumbs{display:none}
-                .nav{width:40px;height:40px;font-size:20px}
-            }
-
-            @media (max-width:420px){
-                .nav{width:36px;height:36px;font-size:18px}
-            }
-        </style>
-    </head>
-    <body>
-        <header>
-            <h1>PhotoFeed</h1>
-        </header>
-
-        <div class="wrap">
-            <div class="carousel" id="carousel">
-                <div class="viewport">
-                    <div class="slides" id="slides">
-                        <div class="slide" data-caption="Golden hour — waves">
-                            <img src="https://picsum.photos/id/1015/1200/1200" alt="slide 1" />
-                        </div>
-                        <div class="slide" data-caption="City skyline at dusk">
-                            <img src="https://picsum.photos/id/1016/1200/1200" alt="slide 2" />
-                        </div>
-                        <div class="slide" data-caption="Mountain trails">
-                            <img src="https://picsum.photos/id/1020/1200/1200" alt="slide 3" />
-                        </div>
-                        <div class="slide" data-caption="Forest path">
-                            <img src="https://picsum.photos/id/1024/1200/1200" alt="slide 4" />
-                        </div>
-                        <div class="slide" data-caption="Minimal still life">
-                            <img src="https://picsum.photos/id/1035/1200/1200" alt="slide 5" />
-                        </div>
-                    </div>
-                </div>
-
-                <button class="nav prev" aria-label="Previous">‹</button>
-                <button class="nav next" aria-label="Next">›</button>
-
-                <div class="dots" id="dots"></div>
-
-                <div class="meta">
-                    <div class="user"><div class="avatar"></div><strong>artme</strong></div>
-                    <div class="actions">❤ <span class="likes">1.2k</span></div>
-                </div>
-
-                <div class="thumbs" id="thumbs"></div>
-            </div>
+    <section class="works" id="work">
+      <div class="section-heading">
+        <div>
+          <p class="label">Portfolio</p>
+          <h2>Selected works</h2>
         </div>
+        <p class="label">2023—2025</p>
+      </div>
 
-        <script>
-            (function(){
-                const slidesWrap = document.getElementById('slides');
-                const slides = Array.from(document.querySelectorAll('.slide'));
-                const prev = document.querySelector('.nav.prev');
-                const next = document.querySelector('.nav.next');
-                const dotsEl = document.getElementById('dots');
-                const thumbsEl = document.getElementById('thumbs');
-                let index = 0;
-                let autoplay = null;
+      <div class="gallery">
+        <!-- Duplicate an article.work to add more paintings. -->
+        <article class="work-card">
+          <button class="artwork" data-title="After the Silence" aria-label="View After the Silence">
+            <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200&q=85" alt="After the Silence" loading="lazy" />
+          </button>
+          <div class="caption"><span>After the Silence</span><span>Oil on canvas, 140 × 110 cm</span></div>
+        </article>
+        <article class="work-card offset">
+          <button class="artwork" data-title="Passage I" aria-label="View Passage I">
+            <img src="https://images.unsplash.com/photo-1577083288073-40892c0860a4?auto=format&fit=crop&w=1100&q=85" alt="Passage I" loading="lazy" />
+          </button>
+          <div class="caption"><span>Passage I</span><span>Acrylic on canvas, 100 × 80 cm</span></div>
+        </article>
+        <article class="work-card narrow">
+          <button class="artwork" data-title="Earth Memory" aria-label="View Earth Memory">
+            <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=1100&q=85" alt="Earth Memory" loading="lazy" />
+          </button>
+          <div class="caption"><span>Earth Memory</span><span>Mixed media, 120 × 100 cm</span></div>
+        </article>
+        <article class="work-card offset narrow">
+          <button class="artwork" data-title="Night Garden" aria-label="View Night Garden">
+            <img src="https://images.unsplash.com/photo-1578301978018-3005759f48f7?auto=format&fit=crop&w=1100&q=85" alt="Night Garden" loading="lazy" />
+          </button>
+          <div class="caption"><span>Night Garden</span><span>Oil on canvas, 150 × 120 cm</span></div>
+        </article>
+      </div>
+    </section>
 
-                function renderDots(){
-                    slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot';d.dataset.i=i;d.addEventListener('click',()=>show(i));dotsEl.appendChild(d)});
-                }
+    <section class="contact" id="contact">
+      <p class="label">Inquiries & collaborations</p>
+      <div>
+        <h2>Let’s start a conversation.</h2>
+        <!-- Replace with your real email and Instagram address. -->
+        <div class="contact-actions">
+          <a class="button" href="mailto:hello@marouaneabdou.com">Email the studio</a>
+          <a class="button" href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
+        </div>
+      </div>
+    </section>
+  </main>
 
-                function renderThumbs(){
-                    slides.forEach((s,i)=>{const img=s.querySelector('img');const t=document.createElement('img');t.src=img.src; t.className='thumb'; t.dataset.i=i; t.addEventListener('click',()=>show(i)); thumbsEl.appendChild(t)});
-                }
+  <footer>
+    <span>© <span id="year"></span> Marouane Abdou</span>
+    <a href="#top">Back to top ↑</a>
+  </footer>
 
-                function updateActive(){
-                    document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===index));
-                    document.querySelectorAll('.thumb').forEach((t,i)=>t.classList.toggle('active',i===index));
-                }
-
-                function show(i){ index = (i+slides.length)%slides.length; slidesWrap.style.transform = `translateX(${-index*100}%)`; updateActive(); }
-
-                prev.addEventListener('click',()=>show(index-1));
-                next.addEventListener('click',()=>show(index+1));
-
-                // keyboard
-                window.addEventListener('keydown',(e)=>{ if(e.key==='ArrowLeft') show(index-1); if(e.key==='ArrowRight') show(index+1); });
-
-                // autoplay (4 seconds)
-                function startAuto(){ if (autoplay) return; autoplay = setInterval(()=>show(index+1),4000); }
-                function stopAuto(){ if (!autoplay) return; clearInterval(autoplay); autoplay = null }
-                document.getElementById('carousel').addEventListener('mouseenter',stopAuto);
-                document.getElementById('carousel').addEventListener('mouseleave',startAuto);
-
-                // touch
-                let sx=0,dx=0
-                slidesWrap.addEventListener('touchstart',e=>{sx=e.touches[0].clientX})
-                slidesWrap.addEventListener('touchmove',e=>{dx=e.touches[0].clientX})
-                slidesWrap.addEventListener('touchend',()=>{ if(!dx) return; if(sx-dx>40) show(index+1); else if(dx-sx>40) show(index-1); sx=dx=0 })
-
-                // init
-                renderDots(); renderThumbs(); show(0); startAuto();
-            })();
-        </script>
-    </body>
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="close" aria-label="Close enlarged artwork">×</button>
+    <img src="" alt="" />
+    <p id="lightbox-title"></p>
+  </div>
+  <script src="script.js"></script>
+</body>
 </html>
